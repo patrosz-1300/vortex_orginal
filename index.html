@@ -3,125 +3,326 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wiki Hub</title>
+  <title>Vortex HUD – Wiki</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #3b82f6;
-      --text: #f8fafc;
-      --text-dim: #94a3b8;
-      --border: #334155;
-      --like-color: #ef4444;
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f293d;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --code-bg: #030712;
+      --like-red: #ef4444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
     body {
       background-color: var(--bg);
-      color: var(--text);
-      padding: 20px;
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 40px 20px;
       display: flex;
       justify-content: center;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 850px;
       width: 100%;
     }
 
     header {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--border);
+      align-items: flex-start;
+      gap: 16px;
     }
 
     h1 {
-      color: var(--accent);
-      font-size: 1.8rem;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
     }
 
-    button.btn-main {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.2s;
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
     }
 
-    button.btn-main:hover {
-      opacity: 0.9;
-      transform: scale(1.02);
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .modal-content {
+    .like-btn {
       background: var(--card-bg);
-      padding: 25px;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 18px;
       border-radius: 12px;
-      width: 90%;
-      max-width: 500px;
-      border: 1px solid var(--border);
-    }
-
-    .modal-content h2 {
-      margin-bottom: 15px;
-    }
-
-    .input-group {
-      margin-bottom: 15px;
-    }
-
-    .input-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--text-dim);
-      font-size: 0.9rem;
-    }
-
-    .input-group input, .input-group textarea, .input-group select {
-      width: 100%;
-      padding: 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 6px;
-      outline: none;
-    }
-
-    .input-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .modal-actions {
+      cursor: pointer;
+      font-weight: 600;
       display: flex;
-      justify-content: flex-end;
-      gap: 10px;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
-    .btn-cancel {
-      background: transparent;
-      color: var(--text-dim);
-      border: 1px solid var(--border);
-      padding: 8px
+    .like-btn:hover {
+      border-color: var(--like-red);
+      color: var(--like-red);
+      transform: translateY(-2px);
+    }
+
+    .like-btn.liked {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--like-red);
+      color: var(--like-red);
+    }
+
+    section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      color: #a5b4fc;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    li strong {
+      color: #fff;
+    }
+
+    code {
+      background: var(--code-bg);
+      color: #38bdf8;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: "Fira Code", monospace;
+      font-size: 0.9em;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .module-group {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+
+    .module-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .module-title {
+      font-weight: 700;
+      color: #e0e7ff;
+      margin-bottom: 4px;
+    }
+
+    .module-list {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .faq-item {
+      margin-bottom: 16px;
+    }
+
+    .faq-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .faq-q {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .faq-a {
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div>
+        <h1>Vortex HUD – Wiki</h1>
+        <p class="subtitle">Client-side HUD and quality-of-life mod for Minecraft 1.21.11 (Fabric) with a menu of 117 modules.</p>
+      </div>
+      <button class="like-btn" id="likeBtn" onclick="toggleLike()">
+        ❤️ <span id="likeText">Plusik</span> (<span id="likeCount">0</span>)
+      </button>
+    </header>
+
+    <main>
+      <!-- Installation -->
+      <section>
+        <h2>📦 Installation</h2>
+        <ol>
+          <li>Install Fabric Loader for Minecraft 1.21.11.</li>
+          <li>Put Fabric API and the Vortex jar into your <code>mods</code> folder.</li>
+          <li>Start the game. Requires Java 21.</li>
+        </ol>
+      </section>
+
+      <!-- How to use -->
+      <section>
+        <h2>🎮 How to use</h2>
+        <ul>
+          <li>Press <strong>Right Shift</strong> in game to open the menu (press it again or Esc to close).</li>
+          <li>Click a module card to turn it on or off.</li>
+          <li>Click <strong>Options</strong> on a card to change its color, chroma (rainbow) mode and other settings.</li>
+          <li>Drag any enabled HUD element with the mouse to move it. <strong>Reset positions</strong> puts everything back.</li>
+          <li>Use the tabs at the top and the mouse wheel (or the scroll bar) to browse modules.</li>
+        </ul>
+      </section>
+
+      <!-- Modules -->
+      <section>
+        <h2>🧩 Modules (117 total)</h2>
+        
+        <div class="module-group">
+          <div class="module-title">Info (51)</div>
+          <div class="module-list">FPS, CPS, Coordinates, Ping, Clock, Direction, Health, Hunger, XP, RAM, Session time, Date, Server address, Online players, Death point, Light level, Chunk, World days, Armor value, Air, Pitch, Yaw, Height above sea level, Position in chunk, Region, Nether coords, Overworld coords, Distance from 0,0, Axis, Effect count, Free slots, Offhand item, Nickname, Game version, Weather, World ticks, Status, Attack cooldown, CPU cores, Java version, OS, Max RAM, Free RAM, Mouse sensitivity, Render distance, Simulation distance, FPS limit, GUI scale, FOV, Brightness, VSync.</div>
+        </div>
+
+        <div class="module-group">
+          <div class="module-title">Inventory (5)</div>
+          <div class="module-list">Armor HUD (vertical/horizontal, normal/vanilla slot style), Effects (with time left), Item counter, Held item, Inventory preview.</div>
+        </div>
+
+        <div class="module-group">
+          <div class="module-title">Counters (24)</div>
+          <div class="module-list">Ender pearls, golden apples, enchanted golden apples, totems, arrows, TNT, obsidian, diamonds, emeralds, iron/gold/netherite ingots, cobblestone, cobwebs, water/lava buckets, fireworks, XP bottles, end crystals, golden carrots, cooked beef, bread, snowballs, redstone.</div>
+        </div>
+
+        <div class="module-group">
+          <div class="module-title">Stats (15)</div>
+          <div class="module-list">Vertical speed, max speed, distance walked, jumps, deaths, time in world, total LMB/RMB clicks, best CPS, left/right CPS, FPS min/avg/max, frame time.</div>
+        </div>
+
+        <div class="module-group">
+          <div class="module-title">Visual (15)</div>
+          <div class="module-list">Custom crosshair, movable scoreboard, fullbright, zoom (hold C), no view bobbing, health/hunger/XP/air/cooldown/durability bars, FPS graph, ping graph, compass, FOV changer.</div>
+        </div>
+
+        <div class="module-group">
+          <div class="module-title">Movement (7)</div>
+          <div class="module-list">Keystrokes, toggle sprint, movement state, speed, active keys, no auto-jump, always sneak.</div>
+        </div>
+      </section>
+
+      <!-- Configuration -->
+      <section>
+        <h2>⚙️ Configuration</h2>
+        <p style="margin-bottom: 12px;">Settings are saved automatically to <code>config/vortex.json</code>:</p>
+        <ul>
+          <li><code>title</code> – the name shown at the top of the menu (you can change it)</li>
+          <li><code>modules</code> – per module: <code>enabled</code>, <code>x</code>, <code>y</code> (position), <code>color</code>, <code>chroma</code>, <code>options</code></li>
+        </ul>
+        <p style="margin-top: 12px; color: var(--text-muted);">Delete the file to reset everything to defaults.</p>
+      </section>
+
+      <!-- FAQ -->
+      <section>
+        <h2>❓ FAQ</h2>
+        <div class="faq-item">
+          <div class="faq-q">Does it work on servers?</div>
+          <div class="faq-a">Yes, it is client-side only. Nothing is installed on the server.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Are there cheats?</div>
+          <div class="faq-a">No combat automation. Some servers restrict things like fullbright or toggle sprint, so check your server rules.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Other Minecraft versions?</div>
+          <div class="faq-a">Only 1.21.11 at the moment.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Something is broken?</div>
+          <div class="faq-a">Report it with your <code>logs/latest.log</code> on the issue tracker.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Vortex HUD Wiki • Hosted on GitHub Pages</p>
+    </footer>
+  </div>
+
+  <script>
+    // Zapisywanie i odczytywanie plusów z localStorage
+    let likes = parseInt(localStorage.getItem('vortex_wiki_likes')) || 12; // domyślnie startowe 12 plusów
+    let isLiked = localStorage.getItem('vortex_wiki_user_liked') === 'true';
+
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCount = document.getElementById('likeCount');
+    const likeText = document.getElementById('likeText');
+
+    function updateUI() {
+      likeCount.textContent = likes;
+      if (isLiked) {
+        likeBtn.classList.add('liked');
+        likeText.textContent = 'Polubiono!';
+      } else {
+        likeBtn.classList.remove('liked');
+        likeText.textContent = 'Plusik';
+      }
+    }
+
+    function toggleLike() {
+      if (isLiked) {
+        likes--;
+        isLiked = false;
+      } else {
+        likes++;
+        isLiked = true;
+      }
+      localStorage.setItem('vortex_wiki_likes', likes);
+      localStorage.setItem('vortex_wiki_user_liked', isLiked);
+      updateUI();
+    }
+
+    // Inicjalizacja przy załadowaniu strony
+    updateUI();
+  </script>
+</body>
+</html>
